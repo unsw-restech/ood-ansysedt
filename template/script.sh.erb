@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# Clean the environment
+module purge
+
+# Set working directory to home directory
+cd "${HOME}"
+
+#
+# Launch Xfce Window Manager and Panel
+#
+
+(
+  module restore
+  export XDG_CONFIG_HOME="<%= session.staged_root.join("config") %>"
+  export XDG_DATA_HOME="<%= session.staged_root.join("share") %>"
+  export XDG_CACHE_HOME="$(mktemp -d)"
+  xfwm4 --compositor=off --daemon --sm-client-disable
+  xsetroot -solid "#D3D3D3"
+  xfsettingsd --sm-client-disable
+  xfce4-panel --sm-client-disable
+) &
+
+#
+# Start ANSYS EDT Workbench
+#
+
+# Load the required environment
+module load <%= context.version %>
+
+# Another ANSYS job with the same job name (file) is already running in this
+# directory or the file.lock file has not been deleted from an abnormally
+# terminated ANSYS run.  To disable this check, set the ANSYS_LOCK environment
+# variable to OFF.
+export ANSYS_LOCK="OFF"
+
+#
+# CFX Related Options
+#
+
+# Disable hardware rendering mode
+#export CUE_GRAPHICS="mesa"
+
+# Make a hosts file that CFX will use in Parallel Distributed
+mkdir -p "${HOME}/.cfx"
+export CFX5_HOSTS_CCL="${HOME}/.cfx/hostinfo.${PBS_JOBID}"
+NODES=$(tr '\n' ',' < "${PBS_NODEFILE}" | sed 's/,$//g')
+touch "${CFX5_HOSTS_CCL}"
+cfx5parhosts -add "${NODES}" -user -file "${CFX5_HOSTS_CCL}"
+
+# Only give OSC MPI option to user through GUI
+#HOSTINFO=$(head -n -2 "${CFX5_HOSTS_CCL}")
+#cat > "${CFX5_HOSTS_CCL}" << EOL
+#${HOSTINFO}
+#    SOLVER STEP CONTROL:
+#      Runtime Priority = Standard
+#      MEMORY CONTROL:
+#        Memory Allocation Factor = 1.0
+#      END
+#      PARALLEL ENVIRONMENT:
+#        Parallel Host List = ${NODES}
+#        Start Method = OSC MPI Distributed Parallel
+#      END
+#    END
+#  END # EXECUTION CONTROL
+#END # SIMULATION CONTROL
+#EOL
+
+#
+# RSH & SSH wrappers
+#
+
+# Add RSH and SSH wrappers for Fluent and CFX
+export PATH="<%= session.staged_root.join("bin") %>:${PATH}"
+
+# Launch ANSYS EDT Workbench
+module list
+set -x
+
+ansysedt

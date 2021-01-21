@@ -1,0 +1,12 @@
+---
+name: ANSYS EDT Workbench
+category: Interactive Apps
+subcategory: GUIs
+role: batch_connect
+description: |
+  This app will launch [ANSYS EDT Workbench] on a compute node in the
+  [Katana cluster].  Once your session starts and you are connected via
+  the Launch button, you may need to manually maximise the application.
+
+  [ANSYS EDT Workbench]: https://www.ansys.com/
+  [Katana cluster]: https://unsw-restech.github.io/restech-docs
