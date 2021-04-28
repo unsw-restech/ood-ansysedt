@@ -39,8 +39,9 @@ attributes:
     required: true
   version:
     widget: select
-    label: "ANSYS EDT Workbench version"
+    label: "ANSYS EDT version"
     help: >-
-      Which version of ANSYS EDT you want to use.
+      Which version of ANSYS Electronics Desktop you want to use.
     options:
-      - [ "19.1", "ansysedt/19.1" ]
+      - [ "2021r1", "ansysedt/2021r1" ]
+      - [ "19.1",   "ansysedt/19.1" ]
