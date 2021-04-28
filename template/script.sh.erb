@@ -22,7 +22,7 @@ cd "${HOME}"
 ) &
 
 #
-# Start ANSYS EDT Workbench
+# Start ANSYS Electronics Desktop
 #
 
 # Load the required environment
@@ -73,7 +73,7 @@ cfx5parhosts -add "${NODES}" -user -file "${CFX5_HOSTS_CCL}"
 # Add RSH and SSH wrappers for Fluent and CFX
 export PATH="<%= session.staged_root.join("bin") %>:${PATH}"
 
-# Launch ANSYS EDT Workbench
+# Launch ANSYS Electronics Desktop
 module list
 set -x
 
